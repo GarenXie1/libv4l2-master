@@ -41,7 +41,6 @@ static int get_pixel_depth(unsigned int fmt)
 }
 
 
-
 int v4l2_open(const char* name, int flag)
 {
     int fd = open(name, flag);
@@ -187,6 +186,8 @@ int v4l2_s_fmt(int fd, int* width, int* height, unsigned int fmt, enum v4l2_buf_
 
     *width = v4l2_fmt.fmt.pix.width;
     *height = v4l2_fmt.fmt.pix.height;
+
+	printf("bytesperline -> %d\n", v4l2_fmt.fmt.pix.height);
 
     return 0;
 }

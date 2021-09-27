@@ -39,11 +39,14 @@
 #include <unistd.h>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
+#include "rgbyuv.c"
 
 #include "libv4l2/libv4l2.h"
 //#include "libv4l2/yuv2rgb.h"
 #include "libv4l2/color.h"
 
+extern void v4lconvert_yuyv_to_rgb24(const unsigned char *src, unsigned char *dest,
+		int width, int height, int stride);
 
 struct modeset_dev;
 static int modeset_find_crtc(int fd, drmModeRes *res, drmModeConnector *conn,
@@ -562,6 +565,7 @@ int main(int argc, char* argv[])
     struct v4l2_buf* v4l2_buf;
     struct v4l2_buf_unit* v4l2_buf_unit;
     unsigned char* buf;
+	struct v4l2_format fmt2;
 
 #if 1
 	const char *card;
@@ -648,6 +652,7 @@ int main(int argc, char* argv[])
     printf("image width:%d\n", width);
     printf("image height:%d\n", height);
 
+
     v4l2_buf = v4l2_reqbufs(fd, V4L2_BUF_TYPE_VIDEO_CAPTURE, nr_bufs);
     if(!v4l2_buf)
         goto err;
@@ -678,8 +683,9 @@ int main(int argc, char* argv[])
         if(!v4l2_buf_unit)
             goto err;
 
-        YUYV2RGB32(v4l2_buf_unit->start, buf, width, height);
-
+        //YUYV2RGB32(v4l2_buf_unit->start, buf, width, height);
+        UYVY2RGB32(v4l2_buf_unit->start, buf, width, height);
+		//v4lconvert_yuyv_to_rgb24(v4l2_buf_unit->start, buf, width, height,480);
         drm_show_img(width, height, buf);
 
         ret = v4l2_qbuf(fd, v4l2_buf_unit);

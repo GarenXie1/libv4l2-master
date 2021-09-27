@@ -81,5 +81,6 @@ B_FROMYU(unsigned char y, unsigned char u);
 void initLut(void);
 void freeLut(void);
 void YUYV2RGB32(unsigned char* yuyv, unsigned char* rgb32, int width, int height);
+void UYVY2RGB32(unsigned char* uyvy, unsigned char* rgb32, int width, int height);
 
 #endif

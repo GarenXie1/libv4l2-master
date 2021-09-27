@@ -166,3 +166,38 @@ void YUYV2RGB32(unsigned char* yuyv, unsigned char* rgb32, int width, int height
     }
 } 
 
+
+void UYVY2RGB32(unsigned char* uyvy, unsigned char* rgb32, int width, int height)
+{
+    unsigned int i, size;
+    unsigned char Y, Y1, U, V;
+    unsigned char *buff = uyvy;
+    unsigned int *output_pt = (unsigned int *)rgb32;
+
+    unsigned int r, g, b;
+    unsigned int color;
+
+    size = width * height /2;
+    for (i = size; i > 0; i--) {
+        /* bgr instead rgb ?? */
+        U = buff[0] ;
+        Y = buff[1] ;
+        V = buff[2];
+        Y1 = buff[3];
+        buff += 4;
+
+        r = R_FROMYV(Y,V);
+        g = G_FROMYUV(Y,U,V); //b
+        b = B_FROMYU(Y,U); //v
+        /* rgb888 */
+        color = (r << 16) | (g << 8) | b;
+        *output_pt++ = color;
+
+        r = R_FROMYV(Y1,V);
+        g = G_FROMYUV(Y1,U,V); //b
+        b = B_FROMYU(Y1,U); //v
+        color = (r << 16) | (g << 8) | b;
+        *output_pt++ = color;
+    }
+}
+
